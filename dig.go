@@ -236,6 +236,21 @@ func (d *Dig) MX(domain string) ([]*dns.MX, error) {
 	return M, nil
 }
 
+func (d *Dig) AAAA(domain string) ([]*dns.AAAA, error) {
+	msg := newMsg(dns.TypeAAAA, domain)
+	res, err := d.exchange(msg)
+	if err != nil {
+		return nil, err
+	}
+	var M []*dns.AAAA
+	for _, v := range res.Answer {
+		if m, ok := v.(*dns.AAAA); ok {
+			M = append(M, m)
+		}
+	}
+	return M, nil
+}
+
 func (d *Dig) SRV(domain string) ([]*dns.SRV, error) {
 	msg := newMsg(dns.TypeSRV, domain)
 	res, err := d.exchange(msg)
