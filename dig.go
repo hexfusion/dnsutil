@@ -251,6 +251,21 @@ func (d *Dig) AAAA(domain string) ([]*dns.AAAA, error) {
 	return M, nil
 }
 
+func (d *Dig) SPF(domain string) ([]*dns.SPF, error) {
+	msg := newMsg(dns.TypeSPF, domain)
+	res, err := d.exchange(msg)
+	if err != nil {
+		return nil, err
+	}
+	var M []*dns.SPF
+	for _, v := range res.Answer {
+		if m, ok := v.(*dns.SPF); ok {
+			M = append(M, m)
+		}
+	}
+	return M, nil
+}
+
 func (d *Dig) SRV(domain string) ([]*dns.SRV, error) {
 	msg := newMsg(dns.TypeSRV, domain)
 	res, err := d.exchange(msg)
