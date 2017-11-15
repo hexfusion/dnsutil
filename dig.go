@@ -266,6 +266,21 @@ func (d *Dig) SPF(domain string) ([]*dns.SPF, error) {
 	return M, nil
 }
 
+func (d *Dig) PTR(domain string) ([]*dns.PTR, error) {
+	msg := newMsg(dns.TypePTR, domain)
+	res, err := d.exchange(msg)
+	if err != nil {
+		return nil, err
+	}
+	var M []*dns.PTR
+	for _, v := range res.Answer {
+		if m, ok := v.(*dns.PTR); ok {
+			M = append(M, m)
+		}
+	}
+	return M, nil
+}
+
 func (d *Dig) SRV(domain string) ([]*dns.SRV, error) {
 	msg := newMsg(dns.TypeSRV, domain)
 	res, err := d.exchange(msg)
